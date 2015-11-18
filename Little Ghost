@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ghost</title>
+    <script src="https://code.jquery.com/jquery-2.1.0.js">
+</script>
+	<script language="javascript">
+			var playing = false;
+			var energy = 50;
+			var countDown = 30;
+			var interId = null,
+				timeId = null;
+			var vv = 1;
+			var iv = 1;
+			
+			function Timeup(){
+				timeStop();
+				playing = false;
+				alert("Time is up!\nCongratulation, your litte ghost won "+ (energy - 50) +" energy!");
+				energy = 0;
+				countDown = 0;
+				ctx.clearRect(0, 0, 750, 450);
+			}
+			
+			function Gameover(){
+			timeStop();
+			playing = false;
+			alert("Gameover!\nYour little ghost has no energy!");
+			ctx.clearRect(0, 0, 750, 450);
+			energy = 0;
+			countDown = 0;
+			}
+			
+						function timeShow(){
+				document.form1.remtime.value = countDown;
+				if(countDown == 0)
+					{
+						Timeup();
+						return;
+					}
+				if(energy < 0 && playing == true)
+				    {
+				        Gameover();
+				        return;
+				    }
+				else
+					{
+						countDown = countDown-1;
+						timeId = setTimeout("timeShow()",1000);
+					}
+			}
+
+			function timeStop(){
+				clearInterval(interId);
+				clearTimeout(timeId);
+			}
+
+			function beforeStart(){
+			alert("Control your little ghost to get more energy!\nOne falling ghost plus 5 points, but falling bat minus 5 points.\nBe careful of pumpkins!You may lose 20 points!");
+			GameStart();
+			};
+
+			function GameStart(){
+				playing = true;
+				energy = 50;
+				countDown = 30;
+				interId = setInterval(function (){
+ctx.clearRect(0,0,750,450);
+ghost.draw();
+ghost.move();
+}, 50);
+				timeShow();
+			}
+	</script>
+</head>
+<body>
+<canvas id="canvas" width="750" height="450"></canvas>
+<div style="display:none;">
+<img id="bat" src="http://icons.iconarchive.com/icons/gcds/halloween/512/bat-icon.png">
+<img id="background" src="http://santasvillage.ca/wp-content/uploads/2015/10/halloween2.jpg">
+<img id="ghost1" src="http://i66.tinypic.com/155h0yt.png">
+<img id="ghost2" src="http://i66.tinypic.com/29zcthu.png">
+<img id="road2" src="http://i64.tinypic.com/2mn4sqa.png">
+<img id="direction" src="http://i67.tinypic.com/2e1t21i.png">
+<img id="light" src="http://securityaffairs.co/wordpress/wp-content/uploads/2015/01/Ghost-vulnerability.png">
+<img id="pumpkin1" src="http://i63.tinypic.com/2uif3av.png">
+<img id="pumpkin2" src="http://i66.tinypic.com/20gd3cn.png">
+<img id="pumpkin3" src="http://i64.tinypic.com/rbegy1.png">
+<img id="pumpkin4" src="http://i68.tinypic.com/o7j4ex.png">
+<img id="pumpkin5" src="http://i64.tinypic.com/2ebda9h.png">
+<img id="pumpkin6" src="http://i68.tinypic.com/ehnhbs.png">
+<img id="pumpkin7" src="http://i63.tinypic.com/o5uzr4.png">
+<img id="pumpkin8" src="http://i63.tinypic.com/110yx41.png">
+<img id="pumpkin9" src="http://i64.tinypic.com/jaxuut.png">
+</div>
+<div id="content">
+<input type="button" value="GameStart" onclick="beforeStart()">
+<form name="form1">
+				<label>Countdown: </label>
+				<input type="text" name="remtime" size="5">
+			</form>
+</div>
+<script>
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var bat = document.getElementById("bat");
+var background = document.getElementById("background");
+var ghost1 = document.getElementById("ghost1");
+var ghost2 = document.getElementById("ghost2");
+var road2 = document.getElementById("road2");
+var directions = document.getElementById("direction");
+var light = document.getElementById("light");
+var pumpkin1 = document.getElementById("pumpkin1");
+var pumpkin2 = document.getElementById("pumpkin2");
+var pumpkin3 = document.getElementById("pumpkin3");
+var pumpkin4 = document.getElementById("pumpkin4");
+var pumpkin5 = document.getElementById("pumpkin5");
+var pumpkin6 = document.getElementById("pumpkin6");
+var pumpkin7 = document.getElementById("pumpkin7");
+var pumpkin8 = document.getElementById("pumpkin8");
+var pumpkin9 = document.getElementById("pumpkin9");
+var pumpkins =[pumpkin1,pumpkin2,pumpkin3,pumpkin4,pumpkin5,pumpkin6,pumpkin7,pumpkin8,pumpkin9];
+var road = function(){
+for(var i = 0;i < 10;i++){
+ctx.drawImage(road2, 75*i, 375, 75, 75);
+}};
+
+var drawScore = function () {
+ctx.font = "20px Comic Sans MS";
+ctx.fillStyle = "White";
+ctx.textAlign = "left";
+ctx.textBaseline = "top";
+ctx.fillText("Energy: " + energy, 10, 10);
+};
+
+var Bat = function(x, y){
+this.speed = 5;
+this.x = x;
+this.y = y;
+};
+Bat.prototype.batdraw = function(){
+ctx.drawImage(bat, this.x, this.y, 40, 40);
+};
+Bat.prototype.batmove = function(){
+this.y += this.speed;
+};
+var bats = [];
+var a = 0;
+
+var Light = function(x, y){
+this.speed = 5;
+this.x = x;
+this.y = y;
+};
+Light.prototype.lightdraw = function(){
+ctx.drawImage(light, this.x, this.y, 35, 38);
+};
+Light.prototype.lightmove = function(){
+this.y += this.speed;
+};
+var lights = [];
+var b = 0;
+
+var Pumpkin = function(x, y){
+this.x = x;
+this.y = y;
+this.type = Math.floor(Math.random()*8);
+};
+Pumpkin.prototype.pumpkindraw = function(){
+ctx.drawImage(pumpkins[this.type], this.x, this.y, 75, 75);
+};
+var pumpkin = [];
+var c = 0;
+
+var Ghost = function(){
+this.x = 0;
+this.y = 275;
+this.speed = 10;
+};
+var drawing = function(object, x){
+ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+ctx.drawImage(directions, 20, 300, 80, 80);
+
+if (a % 10 === 0){
+bats.unshift(new Bat(Math.floor(Math.random()*710), 0));
+};
+for (var j = 0; j < bats.length;j++){
+bats[j].batdraw();
+bats[j].batmove();
+if (x < (bats[j].x + 40) && x > (bats[j].x - 72) && bats[j].y < 375 && bats[j].y > 235){
+energy = energy - 5;
+bats.pop();
+};
+};
+a++;
+
+if (b % 10 === 0){
+lights.unshift(new Light(Math.floor(Math.random()*715), 0));
+};
+for (var m = 0; m < lights.length;m++){
+lights[m].lightdraw();
+lights[m].lightmove();
+if (x < (lights[m].x + 35) && x > (lights[m].x - 72) && lights[m].y < 375 && lights[m].y > 237){
+energy = energy + 5;
+lights.pop();
+};
+};
+b++;
+
+ctx.drawImage(object, x, 275, 72, 96);
+
+if (c % 80 === 0){
+pumpkin.unshift(new Pumpkin(Math.floor(Math.random()*675), 300));
+};
+for (var n = 0; n < pumpkin.length;n++){
+pumpkin[n].pumpkindraw();
+if (x > (pumpkin[n].x - 72) && x < (pumpkin[n].x + 75)){
+energy = energy - 20;
+pumpkin.pop();
+};
+};
+if (c % 100 === 40){
+pumpkin.pop();
+}
+c++;
+
+road();
+drawScore();
+};
+Ghost.prototype.move = function(){
+this.x += this.speed;
+if (this.x < 0){
+this.x = 0;
+this.speed = 0;
+} else if (this.x > 678){
+this.x = 678;
+this.speed = 0;
+}};
+Ghost.prototype.draw = function(){
+if (this.speed >= 0){
+drawing(ghost1, this.x);
+} else {
+drawing(ghost2, this.x);
+}};
+Ghost.prototype.setDirection = function (direction){
+if (direction === "left"){
+this.speed = -10;
+} else if (direction === "right"){
+drawing(ghost1, this.x);
+this.speed = 10;
+} else if (direction === "stop"){
+this.speed = 0;
+}
+};
+
+
+
+
+
+
+
+var keyActions = {
+37: "left",
+32: "stop",
+39: "right",
+};
+var ghost = new Ghost();
+
+
+$("body").keydown(function(event){
+var direction = keyActions[event.keyCode];
+ghost.setDirection(direction);
+});
+
+
+
+</script>
+</body>
+</html>
